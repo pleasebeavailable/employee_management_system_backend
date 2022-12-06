@@ -96,9 +96,7 @@ public class EmployeeControllerTest {
     public void deleteEmployee(Long id) throws Exception {
         ObjectWriter objectWriter = new ObjectMapper().writer();
 
-        mockMvc.perform(delete("/employee/delete/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/employee/delete/" + id))
                 .andExpect(status().isOk());
     }
 
