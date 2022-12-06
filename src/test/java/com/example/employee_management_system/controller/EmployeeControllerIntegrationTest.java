@@ -13,6 +13,8 @@ import com.example.employee_management_system.model.Employee;
 import com.example.employee_management_system.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.util.ArrayList;
+import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,20 @@ public class EmployeeControllerIntegrationTest {
 
     @Test
     public void getEmployees() throws Exception {
+        List<Employee> employeeList = new ArrayList<Employee>();
+        employeeList.add(new Employee(1, "test", "test", "test@test.com"));
+        employeeList.add(new Employee(2, "test2", "test2", "test2@test.com"));
+
+        ObjectWriter objectWriter = new ObjectMapper().writer();
+        for (Employee e : employeeList) {
+            mockMvc.perform(post("/employee/add")
+                            .characterEncoding("utf-8")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .content(objectWriter.writeValueAsString(e))
+                    )
+                    .andExpect(status().isOk());
+        }
         MvcResult result = mockMvc.perform(get("/employee/getAll")).andExpect(status().isOk()).andReturn();
         String resEmployeesString = result.getResponse().getContentAsString();
         Employee[] employees = new ObjectMapper().readValue(resEmployeesString, Employee[].class);
